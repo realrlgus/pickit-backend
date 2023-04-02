@@ -20,8 +20,11 @@ export class UserService {
     return !!user;
   }
 
-  async findAllUser(): Promise<User[]> {
-    return await this.userRepository.find();
+  async findAllUser() {
+    const userData = await this.userRepository.find();
+    return {
+      data: userData,
+    };
   }
 
   async findOneUser(id: number): Promise<User> {
