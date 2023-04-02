@@ -12,7 +12,7 @@ const connectionModule = TypeOrmModule.forRootAsync({
       database: process.env.DB_DATABASE,
       autoLoadEntities: true,
       dropSchema: false,
-      synchronize: false,
+      synchronize: true,
     };
   },
 });
