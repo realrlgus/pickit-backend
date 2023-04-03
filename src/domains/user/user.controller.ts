@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './user.entity';
 import { UserService } from './user.service';
 
@@ -41,7 +42,7 @@ export class UserController {
   @ApiBadRequestResponse({
     description: 'Bad request',
   })
-  async updateOne(@Param('id') id: number, user: User): Promise<void> {
+  async updateOne(@Param('id') id: number, @Body() user: UpdateUserDto) {
     return await this.userService.updateOneUser(id, user);
   }
 }

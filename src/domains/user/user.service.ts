@@ -4,6 +4,7 @@ import { CustomBadRequestException } from 'src/exception/custom-bad-request.exce
 import { PasswordUtil } from 'src/utils/password.util';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './user.entity';
 
 @Injectable()
@@ -56,8 +57,31 @@ export class UserService {
       data: createUserData,
     };
   }
-  async updateOneUser(id: number, user: User): Promise<void> {
-    await this.userRepository.update(id, user);
+  async updateOneUser(id: number, updateUserDto: UpdateUserDto) {
+    const { name, nickname, password } = updateUserDto;
+
+    if (await this.isExistUser(name, 'name')) {
+      throw new CustomBadRequestException('중복된 이름입니다.');
+    }
+    if (await this.isExistUser(nickname, 'nickname')) {
+      throw new CustomBadRequestException('중복된 닉네임입니다.');
+    }
+
+    const newPassword = password
+      ? await PasswordUtil.hashPassword(password)
+      : password;
+
+    await this.userRepository.update(id, {
+      ...(name && { name }),
+      ...(nickname && { nickname }),
+      ...(password && { password: newPassword }),
+    });
+
+    const updateUserData = await this.userRepository.findOne({ where: { id } });
+
+    return {
+      data: updateUserData,
+    };
   }
   async delete(id: number): Promise<void> {
     await this.userRepository.delete(id);
