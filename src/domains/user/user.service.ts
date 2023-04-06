@@ -32,6 +32,15 @@ export class UserService {
   async findOneUser(id: number): Promise<User> {
     return await this.userRepository.findOne({ where: { id } });
   }
+
+  async findOneUserByUsername(username: string) {
+    const userData = await this.userRepository
+      .createQueryBuilder('user')
+      .addSelect('user.password')
+      .where('user.username = :username', { username })
+      .getOne();
+    return userData;
+  }
   async createOneUser(createUserDto: CreateUserDto) {
     const { username, email, name, nickname, password } = createUserDto;
     if (await this.isExistUser(username, 'username')) {
