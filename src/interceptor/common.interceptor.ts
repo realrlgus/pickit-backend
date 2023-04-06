@@ -15,11 +15,11 @@ export class CommonInterceptor implements NestInterceptor {
     next: CallHandler<any>,
   ): Observable<any> | Promise<Observable<any>> {
     return next.handle().pipe(
-      map(({ data, errors, message, status }) => ({
-        status: status || HttpStatus.OK,
-        data: data || [],
-        errors,
-        message,
+      map((item) => ({
+        status: item?.status || HttpStatus.OK,
+        data: item?.data || [],
+        errors: item?.errors,
+        message: item?.message,
       })),
     );
   }

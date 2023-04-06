@@ -4,6 +4,7 @@ import { CustomBadRequestException } from 'src/exception/custom-bad-request.exce
 import { PasswordUtil } from 'src/utils/password.util';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
+import { DeleteUserDto } from './dto/delete-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './user.entity';
 
@@ -83,7 +84,18 @@ export class UserService {
       data: updateUserData,
     };
   }
-  async delete(id: number): Promise<void> {
-    await this.userRepository.delete(id);
+  async deleteOneUser(deleteUserDto: DeleteUserDto) {
+    const { id } = deleteUserDto;
+    const isExist = await this.userRepository.findOne({
+      where: { id, deleted: false },
+    });
+
+    if (!isExist) {
+      throw new CustomBadRequestException('존재하지 않는 사용자입니다.');
+    }
+
+    await this.userRepository.update(id, {
+      deleted: true,
+    });
   }
 }
