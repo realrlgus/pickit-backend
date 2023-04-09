@@ -6,7 +6,7 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe());
-
+  app.enableCors();
   const swaggerConfig = new DocumentBuilder()
     .setTitle('Pickit API')
     .setDescription('픽잇 프로젝트에 사용되는 API입니다')
